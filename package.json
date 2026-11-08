@@ -1,0 +1,22 @@
+{
+  "name": "field-notes-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Field Notes: a library of Markdown pages about our apps and what we learned. Mock shows the sanitized pages in pages/; Real shows a local folder of full notes (owner-run, loopback only).",
+  "license": "MIT",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "start": "npm start -w server",
+    "build": "npm run build -w web",
+    "test": "npm test -w server && npm test -w web && node --test scripts/*.test.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
+  }
+}
