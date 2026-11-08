@@ -13,9 +13,7 @@
       "notes": "Host-run: ./scripts/run.sh (port 7804). Docker: HOST_PORT=7804 docker compose up --build -d (published on 127.0.0.1 only; Mock only). Real: set FIELD_NOTES_DIR in ~/Development/.env to a folder of .md pages outside the repo and run on the host. No catalog row matches yet, so no catalogId; the owner assigns one with the board row.",
       "repo": "https://github.com/curtismu7/field-notes-LAB",
       "tags": [
-        "learnings",
-        "documentation",
-        "tool",
+        "learning",
         "simulated",
         "real"
       ],
