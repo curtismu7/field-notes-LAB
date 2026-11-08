@@ -41,7 +41,17 @@ test('slugs: only safe names, no traversal, no separators, no hidden files', () 
 test('the shipped pages load, have complete front matter and the audit-trail page keeps its findings', () => {
   const { pages, skipped } = loadAll(MOCK_DIR);
   assert.deepEqual(skipped, []);
-  assert.deepEqual(pages.map((p) => p.slug).sort(), ['how-to-add-a-page', 'privilege-mcp-audit-trail']);
+  assert.deepEqual(pages.map((p) => p.slug).sort(), [
+    'how-to-add-a-page',
+    'kibana-access-and-security',
+    'kibana-to-req9-map',
+    'lesson-rotating-a-leaked-webhook-credential',
+    'observability-saved-searches',
+    'ping-log-collector',
+    'pingone-webhooks-by-service',
+    'privilege-logs-into-elasticsearch',
+    'privilege-mcp-audit-trail',
+  ]);
   for (const p of pages) assert.deepEqual(p.problems, [], p.slug);
   const audit = pages.find((p) => p.slug === 'privilege-mcp-audit-trail');
   assert.deepEqual(audit.apps, ['privilege-logging-LAB', 'PingOne Privilege']);
