@@ -1,6 +1,7 @@
-# Field Notes
+# Field Notes LAB
 
-**Tier: Tool**
+Tier: Tool.
+Repo: https://github.com/curtismu7/field-notes-LAB
 
 A library of pages about our apps and what we learned: findings, how-tos and investigations. Each page is one Markdown file in `pages/` with a small front-matter block. Any `.md` file dropped into the folder becomes a page, with no code change and no restart.
 
@@ -48,6 +49,36 @@ source: "owner findings, sanitized"
 - Links: only `http`, `https` and relative links become links (external ones open with `rel="noopener noreferrer"`). `javascript:`, `data:`, `vbscript:`, `//host` and anything with control characters render as plain text. Images are never loaded; they show as `[image: alt]`.
 - Bounded input: a page is refused above 512 KB or 20,000 lines; the viewer caps line length and nesting depth; every scan is linear (a hostile-page test checks it).
 - Raw Markdown is served as `text/markdown` with `Content-Security-Policy: default-src 'none'; sandbox` and `nosniff`.
+
+## Run from a clone
+
+Prerequisites: Node 26 or newer. Docker (OrbStack) only if you use the Docker form. Mock needs no setup.
+
+```sh
+git clone https://github.com/curtismu7/field-notes-LAB.git
+cd field-notes-LAB
+npm ci
+npm run build
+npm run doctor
+npm start
+```
+
+Open http://127.0.0.1:7804/ (the server serves the built page). `GET /api/health` answers `demo-health/1`. Or with Docker: `HOST_PORT=7804 docker compose up --build -d` from the same folder (Mock only).
+
+## Ports, and what to do if the port is taken
+
+```
+Ports: field-notes-LAB listens on 7804 only. Docker publishes it on 127.0.0.1:7804 only.
+
+If the port is taken:
+1. Find what is using it:
+   lsof -iTCP:7804 -sTCP:LISTEN -n -P
+2. If it is an old copy of this lab (npm start), stop that process: kill <PID>.
+   If it is this lab's container: docker compose down (from this folder).
+3. If it is something else, stop it. The lab refuses any other port on purpose
+   (one port per app; npm run doctor says so), so free 7804 rather than moving the lab.
+4. Then start again: npm start, or docker compose up -d.
+```
 
 ## Run
 
