@@ -54,17 +54,17 @@ describe("Mock", () => {
     expect(card.textContent).toMatch(/2026-11-08/);
     expect(within(card).getByText("PingOne Privilege")).toBeInTheDocument();
     expect(within(card).getByText("#requirement-9")).toBeInTheDocument();
-    expect(screen.getByTestId("count").textContent).toBe("9 of 9 pages");
+    expect(screen.getByTestId("count").textContent).toBe("11 of 11 pages");
 
     await user.selectOptions(screen.getByTestId("filter-tag"), "siem");
-    await waitFor(() => expect(screen.getByTestId("count").textContent).toBe("2 of 9 pages match"));
+    await waitFor(() => expect(screen.getByTestId("count").textContent).toBe("2 of 11 pages match"));
     expect(screen.queryByTestId("card-how-to-add-a-page")).toBeNull();
     await user.click(screen.getByTestId("clear"));
     await user.click(within(await screen.findByTestId("card-how-to-add-a-page")).getByText("field-notes-LAB"));
     await waitFor(() => expect(screen.queryByTestId("card-privilege-mcp-audit-trail")).toBeNull());
     await user.click(screen.getByTestId("clear"));
     await user.type(screen.getByTestId("search"), "nebula");
-    await waitFor(() => expect(screen.getByTestId("count").textContent).toBe("1 of 9 pages match"));
+    await waitFor(() => expect(screen.getByTestId("count").textContent).toBe("1 of 11 pages match"));
     expect(screen.getByTestId("card-privilege-mcp-audit-trail")).toBeInTheDocument();
 
     for (const tab of ["about", "list"]) {

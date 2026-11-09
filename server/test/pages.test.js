@@ -49,6 +49,8 @@ test('the shipped pages load, have complete front matter and the audit-trail pag
     'observability-saved-searches',
     'ping-log-collector',
     'pingone-webhooks-by-service',
+    'privilege-gateway-k8s-operations',
+    'privilege-gateway-k8s-package',
     'privilege-logs-into-elasticsearch',
     'privilege-mcp-audit-trail',
   ]);
