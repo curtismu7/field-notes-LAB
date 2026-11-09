@@ -27,7 +27,7 @@ test('Mock: info says mock, Real unavailable with a how-to; POST /api/mode real 
     assert.equal(info.source, 'mock');
     assert.equal(info.realAvailable, false);
     assert.match(info.realHint, /FIELD_NOTES_DIR/);
-    assert.equal(info.pageCount, 9);
+    assert.equal(info.pageCount, 11);
     const r = await post(url, '/api/mode', { source: 'real' });
     assert.equal(r.status, 409);
     assert.equal((await r.json()).error, 'real_not_configured');
@@ -110,7 +110,7 @@ test('settings file: FIELD_NOTES_DIR is read from STANDALONE_ENV, the environmen
 test('pages API: list with filters and search, one page, 404, bad slug 400, query cap', async () => {
   await withServer(async (url) => {
     const all = await getJson(url, '/api/pages');
-    assert.equal(all.total, 9);
+    assert.equal(all.total, 11);
     assert.ok(all.facets.apps.some((a) => a.name === 'PingOne Privilege'));
     assert.deepEqual((await getJson(url, '/api/pages?tag=siem')).pages.map((p) => p.slug).sort(), ['privilege-logs-into-elasticsearch', 'privilege-mcp-audit-trail']);
     assert.deepEqual((await getJson(url, '/api/pages?app=field-notes-LAB')).pages.map((p) => p.slug), ['how-to-add-a-page']);
