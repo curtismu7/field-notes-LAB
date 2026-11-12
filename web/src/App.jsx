@@ -1,6 +1,8 @@
 import React from "react";
+import fs from "node:fs";
 import { getJson, setMode } from "./api";
-import { THEMES, applyTheme, savedTheme } from "./theme";
+import { applyTheme, savedTheme } from "./theme";
+import TopMenu, { applyFontSize } from "./top-menu/TopMenu.jsx";
 import ShelfLink from "./components/ShelfLink.jsx";
 import PageList from "./components/PageList.jsx";
 import PageView from "./components/PageView.jsx";
@@ -21,14 +23,22 @@ export const BANNER = {
   unknown: "Mode unknown: the server did not answer. Nothing is shown until it does.",
 };
 
+// Version for the TopMenu About button: read once from the lab root package.json.
+const LAB_VERSION = (() => { try { return JSON.parse(fs.readFileSync(new URL("../../package.json", import.meta.url), "utf8")).version || null; } catch { return null; } })();
+
 export default function App() {
   const [route, setRoute] = React.useState(() => parseRoute(window.location.hash));
   const [info, setInfo] = React.useState(undefined); // undefined = loading, null = failed
   const [epoch, setEpoch] = React.useState(0); // bumped on every mode switch: every page reloads its data
   const [switchError, setSwitchError] = React.useState("");
   const [theme, setTheme] = React.useState(savedTheme);
+  const [fontStep, setFontStep] = React.useState(() => { try { const f = localStorage.getItem("fieldnotes.font"); return ["S", "M", "L"].includes(f) ? f : "M"; } catch { return "M"; } });
 
   React.useEffect(() => { applyTheme(theme); }, [theme]);
+  React.useEffect(() => {
+    applyFontSize(fontStep);
+    try { localStorage.setItem("fieldnotes.font", fontStep); } catch { /* blocked */ }
+  }, [fontStep]);
   React.useEffect(() => {
     const on = () => { setRoute(parseRoute(window.location.hash)); window.scrollTo(0, 0); };
     window.addEventListener("hashchange", on);
@@ -59,20 +69,15 @@ export default function App() {
           {nav.map(([id, href, label]) => <a key={id} href={href} data-testid={`nav-${id}`} aria-current={current === id ? "page" : undefined}>{label}</a>)}
         </nav>
         <span className="shell-right">
-          {info && (
-            <span className="seg" role="group" aria-label="Content source">
-              <button type="button" aria-pressed={!real} data-testid="mode-mock" onClick={() => switchTo("mock")} title="Show the sanitized pages shipped in this repo">Mock</button>
-              <button type="button" aria-pressed={real} data-testid="mode-real" disabled={!info.realAvailable && !real} aria-describedby={realHint ? "real-hint" : undefined}
-                title={info.realAvailable ? "Show your full notes from FIELD_NOTES_DIR (read-only, loopback only)" : realHint}
-                onClick={() => switchTo("real")}>Real</button>
-            </span>
-          )}
-          <ShelfLink />
-          <label className="shell-theme">Theme
-            <select value={theme} onChange={(e) => setTheme(e.target.value)} data-testid="theme">
-              {THEMES.map((t) => <option key={t} value={t}>{t}</option>)}
-            </select>
-          </label>
+          <TopMenu
+            mode={info && { value: real ? "real" : "mock", onChange: switchTo, realAvailable: info.realAvailable, realHint: realHint || undefined }}
+            theme={{ value: theme, onChange: setTheme }}
+            fontSize={{ value: fontStep, onChange: setFontStep }}
+            help={{ href: "https://github.com/curtismu7/field-notes-LAB#readme" }}
+            version={LAB_VERSION}
+          >
+            <ShelfLink />
+          </TopMenu>
         </span>
       </header>
       <main className="page" id="main" tabIndex={-1}>
