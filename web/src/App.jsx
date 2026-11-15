@@ -4,6 +4,7 @@ import { getJson, setMode } from "./api";
 import { applyTheme, savedTheme } from "./theme";
 import TopMenu, { applyFontSize } from "./top-menu/TopMenu.jsx";
 import ShelfLink from "./components/ShelfLink.jsx";
+import VerifyMark from "./components/VerifyMark.jsx";
 import PageList from "./components/PageList.jsx";
 import PageView from "./components/PageView.jsx";
 import About from "./components/About.jsx";
@@ -77,6 +78,7 @@ export default function App() {
             version={LAB_VERSION}
           >
             <ShelfLink />
+            <VerifyMark id="field-notes-lab" />
           </TopMenu>
         </span>
       </header>
