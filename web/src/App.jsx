@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { getJson, setMode } from "./api";
 import { applyTheme, savedTheme } from "./theme";
 import TopMenu, { applyFontSize } from "./top-menu/TopMenu.jsx";
+import TalkTrackDialog from "./talk-track/TalkTrackDialog.jsx";
 import ShelfLink from "./components/ShelfLink.jsx";
 import VerifyMark from "./components/VerifyMark.jsx";
 import PageList from "./components/PageList.jsx";
@@ -33,6 +34,9 @@ export default function App() {
   const [epoch, setEpoch] = React.useState(0); // bumped on every mode switch: every page reloads its data
   const [switchError, setSwitchError] = React.useState("");
   const [theme, setTheme] = React.useState(savedTheme);
+  const [talkOpen, setTalkOpen] = React.useState(false);
+  const [talkSteps, setTalkSteps] = React.useState([]);
+  React.useEffect(() => { fetch("/api/talk-track").then((r) => (r.ok ? r.json() : null)).then((d) => setTalkSteps((d && d.talkTrack) || [])).catch(() => {}); }, []);
   const [fontStep, setFontStep] = React.useState(() => { try { const f = localStorage.getItem("fieldnotes.font"); return ["S", "M", "L"].includes(f) ? f : "M"; } catch { return "M"; } });
 
   React.useEffect(() => { applyTheme(theme); }, [theme]);
@@ -73,6 +77,7 @@ export default function App() {
           <TopMenu
             mode={info && { value: real ? "real" : "mock", onChange: switchTo, realAvailable: info.realAvailable, realHint: realHint || undefined }}
             theme={{ value: theme, onChange: setTheme }}
+            talkTrack={{ active: talkOpen, onToggle: () => setTalkOpen((v) => !v) }}
             fontSize={{ value: fontStep, onChange: setFontStep }}
             help={{ href: "https://github.com/curtismu7/field-notes-LAB#readme" }}
             version={LAB_VERSION}
@@ -88,6 +93,8 @@ export default function App() {
         {switchError && <p className="field-error" role="alert" data-testid="switch-error">{switchError}</p>}
         {info === null ? null : route.name === "page" ? <PageView slug={route.slug} anchor={route.anchor} epoch={epoch} source={info?.source} />
           : route.name === "about" ? <About info={info} /> : <PageList epoch={epoch} source={info?.source} />}
+        <TalkTrackDialog isOpen={talkOpen} onClose={() => setTalkOpen(false)} talk={talkSteps} />
+
       </main>
     </div>
   );

@@ -72,6 +72,15 @@ export function createApp({ health = createHealth(), env = process.env, useSetti
     res.json({ source: cur.source, total: all.pages.length, ...result, skipped: all.skipped });
   });
 
+  api.get('/talk-track', (req, res) => {
+    const cur = current();
+    try {
+      const all = loadAll(cur.dir);
+      const steps = all.pages.map((pg, i) => ({ id: `p${i + 1}`, title: pg.title || pg.slug, say: pg.summary || '' }));
+      res.set('Cache-Control', 'no-store').json({ talkTrack: steps });
+    } catch { res.status(503).json({ error: 'folder_unreadable', source: cur.source }); }
+  });
+
   const pageOr404 = (req, res) => {
     const { slug } = req.params;
     if (!isSlug(slug)) { res.status(400).json({ error: 'bad_slug' }); return null; }
