@@ -44,7 +44,8 @@ button[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent-deep
 .field input, .field select { width: 100%; min-width: 0; }
 
 /* Cards (pattern 4) */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 0.75rem; margin: 0.75rem 0; }
+.card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin: 0.75rem 0; }
+@media (max-width: 900px) { .card-grid { grid-template-columns: minmax(0, 1fr); } }
 .card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); border-top: 4px solid var(--accent); padding: 0.9rem 1rem; min-width: 0; }
 .card--neutral { border-top-color: var(--border); }
 .card--warn { border-top-color: var(--status-warn); }
