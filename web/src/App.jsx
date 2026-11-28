@@ -4,6 +4,8 @@ import { getJson, setMode } from "./api";
 import { applyTheme, savedTheme } from "./theme";
 import TopMenu, { applyFontSize } from "./top-menu/TopMenu.jsx";
 import TalkTrackDialog from "./talk-track/TalkTrackDialog.jsx";
+import HelpDialog from "./help-dialog/HelpDialog.jsx";
+import { HELP_SECTIONS } from "./helpContent";
 import ShelfLink from "./components/ShelfLink.jsx";
 import VerifyMark from "./components/VerifyMark.jsx";
 import PageList from "./components/PageList.jsx";
@@ -35,6 +37,7 @@ export default function App() {
   const [switchError, setSwitchError] = React.useState("");
   const [theme, setTheme] = React.useState(savedTheme);
   const [talkOpen, setTalkOpen] = React.useState(false);
+  const [helpOpen, setHelpOpen] = React.useState(false);
   const [talkSteps, setTalkSteps] = React.useState([]);
   React.useEffect(() => { fetch("/api/talk-track").then((r) => (r.ok ? r.json() : null)).then((d) => setTalkSteps((d && d.talkTrack) || [])).catch(() => {}); }, []);
   const [fontStep, setFontStep] = React.useState(() => { try { const f = localStorage.getItem("fieldnotes.font"); return ["S", "M", "L"].includes(f) ? f : "M"; } catch { return "M"; } });
@@ -79,7 +82,7 @@ export default function App() {
             theme={{ value: theme, onChange: setTheme }}
             talkTrack={{ active: talkOpen, onToggle: () => setTalkOpen((v) => !v) }}
             fontSize={{ value: fontStep, onChange: setFontStep }}
-            help={{ href: "https://github.com/curtismu7/field-notes-LAB#readme" }}
+            help={{ onClick: () => setHelpOpen(true), title: "What this lab is, and what is simulated" }}
             version={LAB_VERSION}
           >
             <ShelfLink />
@@ -94,6 +97,7 @@ export default function App() {
         {info === null ? null : route.name === "page" ? <PageView slug={route.slug} anchor={route.anchor} epoch={epoch} source={info?.source} />
           : route.name === "about" ? <About info={info} /> : <PageList epoch={epoch} source={info?.source} />}
         <TalkTrackDialog isOpen={talkOpen} onClose={() => setTalkOpen(false)} talk={talkSteps} />
+        <HelpDialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} sections={HELP_SECTIONS} docsUrl="https://github.com/curtismu7/field-notes-LAB#readme" />
 
       </main>
     </div>
